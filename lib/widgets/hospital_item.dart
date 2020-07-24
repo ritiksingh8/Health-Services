@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_service/models/hospital.dart';
+import '../screens/hospital_detail_screen.dart';
 
 class HospitalItem extends StatelessWidget {
   final Hospital hospitalItem;
@@ -9,7 +10,10 @@ class HospitalItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context)
+            .pushNamed(HospitalDetailScreen.routeName, arguments: hospitalItem);
+      },
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),

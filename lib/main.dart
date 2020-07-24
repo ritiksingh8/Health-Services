@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './screens/hospital_screen.dart';
+import './screens/hospital_detail_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,15 +15,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.pink,
         backgroundColor: Colors.pink,
         accentColor: Colors.deepPurple,
+        canvasColor: Color.fromRGBO(255, 254, 229, 1),
         accentColorBrightness: Brightness.dark,
-        buttonTheme: ButtonTheme.of(context).copyWith(
-            buttonColor: Colors.pink,
-            textTheme: ButtonTextTheme.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            )),
       ),
       home: HospitalScreen(),
+      routes: {
+        HospitalDetailScreen.routeName: (ctx) => HospitalDetailScreen(),
+      },
     );
   }
 }
