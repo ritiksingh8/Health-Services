@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:health_service/screens/doctor_detail_screen.dart';
+import './screens/doctors_list_screen.dart';
 import './screens/hospital_screen.dart';
 import './screens/hospital_detail_screen.dart';
 
@@ -21,6 +23,8 @@ class MyApp extends StatelessWidget {
       home: HospitalScreen(),
       routes: {
         HospitalDetailScreen.routeName: (ctx) => HospitalDetailScreen(),
+        DoctorsListScreen.routeName: (ctx) => DoctorsListScreen(),
+        DoctorDetailScreen.routeName: (ctx) => DoctorsListScreen(),
       },
     );
   }

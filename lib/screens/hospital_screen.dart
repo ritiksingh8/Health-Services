@@ -26,18 +26,21 @@ class _HospitalScreenState extends State<HospitalScreen> {
           final hospitalDocs = futureSnapshot.data.documents;
 
           return ListView.builder(
-            itemBuilder: (ctx, index) => HospitalItem(
-              Hospital(
-                name: hospitalDocs[index]['name'],
-                description: hospitalDocs[index]['description'],
-                lat: hospitalDocs[index]['lat'],
-                lng: hospitalDocs[index]['lng'],
-                imageurl: hospitalDocs[index]['imageurl'],
-                website: hospitalDocs[index]['website'],
-                phoneNo: hospitalDocs[index]['phone_no'],
-                email: hospitalDocs[index]['email'],
-              ),
-            ),
+            itemBuilder: (ctx, index) {
+              return HospitalItem(
+                Hospital(
+                  uid: hospitalDocs[index].documentID,
+                  name: hospitalDocs[index]['name'],
+                  description: hospitalDocs[index]['description'],
+                  lat: hospitalDocs[index]['lat'],
+                  lng: hospitalDocs[index]['lng'],
+                  imageurl: hospitalDocs[index]['imageurl'],
+                  website: hospitalDocs[index]['website'],
+                  phoneNo: hospitalDocs[index]['phone_no'],
+                  email: hospitalDocs[index]['email'],
+                ),
+              );
+            },
             itemCount: hospitalDocs.length,
           );
         },

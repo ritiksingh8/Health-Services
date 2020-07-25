@@ -3,6 +3,8 @@ import '../widgets/hospital_location.dart';
 import '../models/hospital.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'doctors_list_screen.dart';
+
 class HospitalDetailScreen extends StatelessWidget {
   static const routeName = '/hospital-detail-screen';
 
@@ -132,7 +134,11 @@ class HospitalDetailScreen extends StatelessWidget {
                 Container(
                   height: 45,
                   child: RaisedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                          DoctorsListScreen.routeName,
+                          arguments: hospital.uid);
+                    },
                     icon: Icon(
                       Icons.local_hospital,
                       color: Colors.white,
