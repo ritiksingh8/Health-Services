@@ -35,6 +35,7 @@ class DoctorsListScreen extends StatelessWidget {
             itemCount: doctorDocs.length,
             itemBuilder: (ctx, index) {
               final doctor = Doctor(
+                uid: doctorDocs[index].documentID,
                 name: doctorDocs[index]['name'],
                 email: doctorDocs[index]['email'],
                 contact: doctorDocs[index]['contact'],
