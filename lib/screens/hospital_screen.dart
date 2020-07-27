@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/hospital_item.dart';
 import '../models/hospital.dart';
@@ -15,6 +16,14 @@ class _HospitalScreenState extends State<HospitalScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('List Of Hospitals'),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.search), onPressed: () {}),
+          IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              }),
+        ],
       ),
       body: FutureBuilder(
         future: Firestore.instance.collection('hospitals').getDocuments(),
