@@ -14,6 +14,34 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Chat',
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+        backgroundColor: Colors.pink,
+        accentColor: Colors.deepPurple,
+        canvasColor: Color.fromRGBO(255, 254, 229, 1),
+        accentColorBrightness: Brightness.dark,
+      ),
+      home: HomeScreen(),
+      routes: {
+        HospitalDetailScreen.routeName: (ctx) => HospitalDetailScreen(),
+        DoctorsListScreen.routeName: (ctx) => DoctorsListScreen(),
+        DoctorDetailScreen.routeName: (ctx) => DoctorsListScreen(),
+        DoctorsReviewsScreen.routeName: (ctx) => DoctorsReviewsScreen(),
+      },
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   Future<bool> checkDocExistence(String docId) async {
     bool exists = false;
     try {
@@ -36,53 +64,48 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Chat',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-        backgroundColor: Colors.pink,
-        accentColor: Colors.deepPurple,
-        canvasColor: Color.fromRGBO(255, 254, 229, 1),
-        accentColorBrightness: Brightness.dark,
-      ),
-      home: StreamBuilder(
-        stream: FirebaseAuth.instance.onAuthStateChanged,
-        builder: (ctx, userSnapshot) {
-          if (!userSnapshot.hasData) {
-            return AuthScreen();
-          }
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.onAuthStateChanged,
+      builder: (ctx, userSnapshot) {
+        if (!userSnapshot.hasData) {
+          return AuthScreen();
+        }
 
-          return FutureBuilder(
-            future: FirebaseAuth.instance.currentUser(),
-            builder: (ctx, futureSnapshot) {
-              if (futureSnapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return FutureBuilder(
-                  future: checkDocExistence(futureSnapshot.data.uid),
-                  builder: (ctx, boolSnapshot) {
-                    if (boolSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return Scaffold(
-                        body: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-
-                    return boolSnapshot.data ? DummyScreen() : HospitalScreen();
-                  });
-            },
+        if (!AuthScreen.authComplete) {
+          WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+          print('AuthCom false');
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
           );
-        },
-      ),
-      routes: {
-        HospitalDetailScreen.routeName: (ctx) => HospitalDetailScreen(),
-        DoctorsListScreen.routeName: (ctx) => DoctorsListScreen(),
-        DoctorDetailScreen.routeName: (ctx) => DoctorsListScreen(),
-        DoctorsReviewsScreen.routeName: (ctx) => DoctorsReviewsScreen(),
+        }
+
+        return FutureBuilder(
+          future: FirebaseAuth.instance.currentUser(),
+          builder: (ctx, futureSnapshot) {
+            if (futureSnapshot.connectionState == ConnectionState.waiting) {
+              return Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            return FutureBuilder(
+                future: checkDocExistence(futureSnapshot.data.uid),
+                builder: (ctx, boolSnapshot) {
+                  if (boolSnapshot.connectionState == ConnectionState.waiting) {
+                    return Scaffold(
+                      body: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  return boolSnapshot.data ? DummyScreen() : HospitalScreen();
+                });
+          },
+        );
       },
     );
   }

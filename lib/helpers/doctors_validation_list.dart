@@ -34,4 +34,29 @@ const doctors_validation_list = [
     'email': 'viraj.shah@spit.ac.in',
     'regNo': '12345676',
   },
+  {
+    'name': 'Gaurav Patil',
+    'email': 'gaurav.patil@spit.ac.in',
+    'regNo': '12345677',
+  },
+  {
+    'name': 'Jainam Jain',
+    'email': 'jainam.jain@spit.ac.in',
+    'regNo': '12345678',
+  },
+  {
+    'name': 'Abhir Singh',
+    'email': 'abhir.singh@spit.ac.in',
+    'regNo': '12345679',
+  },
+  {
+    'name': 'Sarika Singh',
+    'email': 'sarika.singh@spit.ac.in',
+    'regNo': '12345680',
+  },
+  {
+    'name': 'Yug Vajani',
+    'email': 'yug.vajani@spit.ac.in',
+    'regNo': '12345681',
+  },
 ];

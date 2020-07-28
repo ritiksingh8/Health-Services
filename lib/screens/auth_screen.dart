@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import '../helpers/doctors_validation_list.dart';
 
 class AuthScreen extends StatefulWidget {
+  static bool authComplete = true;
   @override
   _AuthScreenState createState() => _AuthScreenState();
 }
@@ -32,13 +33,17 @@ class _AuthScreenState extends State<AuthScreen> {
       setState(() {
         _isLoading = true;
       });
+
       if (isLogin) {
+        AuthScreen.authComplete = false;
         authResult = await _auth.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
+        AuthScreen.authComplete = true;
       } else if (isDoctorLogin) {
         if (isDoctorLogin) {
+          AuthScreen.authComplete = false;
           final foundDoctorMap = doctors_validation_list.where(
             (doctorMap) {
               return (doctorMap['email'] == email &&
@@ -70,8 +75,10 @@ class _AuthScreenState extends State<AuthScreen> {
             'email': email,
             'imageurl': url,
           });
+          AuthScreen.authComplete = true;
         }
       } else {
+        AuthScreen.authComplete = false;
         print(isDoctorLogin);
         print(regNo);
         authResult = await _auth.createUserWithEmailAndPassword(
@@ -95,8 +102,10 @@ class _AuthScreenState extends State<AuthScreen> {
           'email': email,
           'image_url': url,
         });
+        AuthScreen.authComplete = true;
       }
     } on PlatformException catch (error) {
+      AuthScreen.authComplete = false;
       var message = 'An error occured, please check your credentials';
 
       if (error.message != null) {
@@ -108,11 +117,13 @@ class _AuthScreenState extends State<AuthScreen> {
           backgroundColor: Theme.of(context).errorColor,
         ),
       );
+      AuthScreen.authComplete = true;
 
       setState(() {
         _isLoading = false;
       });
     } catch (error) {
+      AuthScreen.authComplete = false;
       var message = 'You are not a registered Doctor!';
 
       Scaffold.of(ctx).showSnackBar(
@@ -121,6 +132,7 @@ class _AuthScreenState extends State<AuthScreen> {
           backgroundColor: Theme.of(context).errorColor,
         ),
       );
+      AuthScreen.authComplete = true;
 
       setState(() {
         _isLoading = false;
