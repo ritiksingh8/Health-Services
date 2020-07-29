@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:health_service/screens/auth_screen.dart';
 import 'package:health_service/screens/doctor_detail_screen.dart';
 import 'package:health_service/screens/doctors_reviews_screen.dart';
-import 'package:health_service/screens/dummy_screen.dart';
+import 'package:health_service/screens/update_profile.dart';
 import './screens/doctors_list_screen.dart';
 import './screens/hospital_screen.dart';
 import './screens/hospital_detail_screen.dart';
@@ -102,7 +102,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   }
 
-                  return boolSnapshot.data ? DummyScreen() : HospitalScreen();
+                  return boolSnapshot.data
+                      ? UpdateProfile(
+                          isUpdate: false,
+                        )
+                      : HospitalScreen();
                 });
           },
         );
