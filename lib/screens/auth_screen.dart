@@ -74,6 +74,7 @@ class _AuthScreenState extends State<AuthScreen> {
             'name': name,
             'email': email,
             'imageurl': url,
+            'isSignedIn': false,
           });
           AuthScreen.authComplete = true;
         }

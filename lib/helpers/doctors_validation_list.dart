@@ -59,4 +59,29 @@ const doctors_validation_list = [
     'email': 'yug.vajani@spit.ac.in',
     'regNo': '12345681',
   },
+  {
+    'name': 'test user',
+    'email': 'test@spit.ac.in',
+    'regNo': '12345682',
+  },
+  {
+    'name': 'test user1',
+    'email': 'test1@spit.ac.in',
+    'regNo': '12345683',
+  },
+  {
+    'name': 'test user2',
+    'email': 'test2@spit.ac.in',
+    'regNo': '12345684',
+  },
+  {
+    'name': 'test user3',
+    'email': 'test3@spit.ac.in',
+    'regNo': '12345685',
+  },
+  {
+    'name': 'test user4',
+    'email': 'test4@spit.ac.in',
+    'regNo': '12345686',
+  },
 ];

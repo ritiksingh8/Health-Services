@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_service/screens/auth_screen.dart';
 import 'package:health_service/screens/doctor_detail_screen.dart';
+import 'package:health_service/screens/doctor_main_screen.dart';
 import 'package:health_service/screens/doctors_reviews_screen.dart';
 import 'package:health_service/screens/update_profile.dart';
 import './screens/doctors_list_screen.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       ),
       home: HomeScreen(),
       routes: {
+        DoctorMainScreen.routeName: (ctx) => DoctorMainScreen(),
         HospitalDetailScreen.routeName: (ctx) => HospitalDetailScreen(),
         DoctorsListScreen.routeName: (ctx) => DoctorsListScreen(),
         DoctorDetailScreen.routeName: (ctx) => DoctorsListScreen(),
@@ -42,8 +44,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<bool> checkDocExistence(String docId) async {
+  Future<Map<String, bool>> checkDocExistence(String docId) async {
     bool exists = false;
+    bool isSignedIn = false;
     try {
       await Firestore.instance
           .collection('doctors')
@@ -51,14 +54,16 @@ class _HomeScreenState extends State<HomeScreen> {
           .get()
           .then((doc) {
         print('Inside');
-        if (doc.exists)
+
+        if (doc.exists) {
+          isSignedIn = doc.data['isSignedIn'];
           exists = true;
-        else
+        } else
           exists = false;
       });
-      return exists;
+      return {'isExist': exists, 'isSignedIn': isSignedIn};
     } catch (e) {
-      return false;
+      return {'isExist': exists, 'isSignedIn': isSignedIn};
     }
   }
 
@@ -70,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (!userSnapshot.hasData) {
           return AuthScreen();
         }
+        print('Here');
 
         if (!AuthScreen.authComplete) {
           WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
@@ -102,10 +108,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   }
 
-                  return boolSnapshot.data
-                      ? UpdateProfile(
-                          isUpdate: false,
-                        )
+                  return boolSnapshot.data['isExist']
+                      ? (boolSnapshot.data['isSignedIn']
+                          ? DoctorMainScreen()
+                          : UpdateProfile(
+                              isUpdate: false,
+                            ))
                       : HospitalScreen();
                 });
           },

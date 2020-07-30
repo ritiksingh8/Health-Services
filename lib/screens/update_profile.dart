@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:health_service/pickers/user_image_picker.dart';
+import 'package:health_service/screens/doctor_main_screen.dart';
 
 class UpdateProfile extends StatefulWidget {
   final bool isUpdate;
@@ -23,6 +28,14 @@ class _UpdateProfileState extends State<UpdateProfile> {
   final _aboutFocusNode = FocusNode();
   final _educationFocusNode = FocusNode();
   final _hospitalFocusNode = FocusNode();
+  bool isImageSelected = false;
+
+  var _userImageFile;
+
+  void _pickedImage(File image) {
+    _userImageFile = image;
+    isImageSelected = true;
+  }
 
   Map<String, dynamic> _initValues = {
     'name': '',
@@ -48,6 +61,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
     'about': "",
     'education': '',
     'hospital': '',
+    'isSignedIn': true,
   };
 
   var _isLoading = false;
@@ -56,6 +70,38 @@ class _UpdateProfileState extends State<UpdateProfile> {
   String _selectedHospital = 'h7TslvuiH6IeoaXlNbmB';
 
   List<DropdownMenuItem<String>> hospitalList = [];
+  List<DropdownMenuItem<String>> doctorTypeList = [
+    DropdownMenuItem(
+      child: Text('Dentist'),
+      value: 'Dentist',
+    ),
+    DropdownMenuItem(
+      child: Text('Gynecologist/obstetrician'),
+      value: 'Gynecologist/obstetrician',
+    ),
+    DropdownMenuItem(
+      child: Text('General Physician'),
+      value: 'General Physician',
+    ),
+    DropdownMenuItem(
+      child: Text('Dermatologist'),
+      value: 'Dermatologist',
+    ),
+    DropdownMenuItem(
+      child: Text('ENT Specialist'),
+      value: 'ENT Specialist',
+    ),
+    DropdownMenuItem(
+      child: Text('Homeopath'),
+      value: 'Homeopath',
+    ),
+    DropdownMenuItem(
+      child: Text('Ayurveda'),
+      value: 'Ayurveda',
+    ),
+  ];
+
+  String _selectedDoctorType = 'Dentist';
   DocumentReference docRef;
 
   Future<void> _saveForm() async {
@@ -75,14 +121,28 @@ class _UpdateProfileState extends State<UpdateProfile> {
         .document(_submitValues['hospital']);
     _submitValues['hospital'] = docRef;
 
+    if (widget.isUpdate && isImageSelected) {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('user_images')
+          .child(currentUserId + '.jpg');
+
+      await ref.putFile(_userImageFile).onComplete;
+
+      final url = await ref.getDownloadURL();
+
+      _submitValues['imageurl'] = url.toString();
+    }
+
+    print(_submitValues);
     await Firestore.instance
         .collection('doctors')
         .document(currentUserId)
         .setData(_submitValues);
-    print(_submitValues);
-    setState(() {
-      _isLoading = false;
-    });
+    // print(_userImageFile);
+    //print(_submitValues);
+
+    Navigator.of(context).pushReplacementNamed(DoctorMainScreen.routeName);
   }
 
   @override
@@ -124,8 +184,16 @@ class _UpdateProfileState extends State<UpdateProfile> {
           _initValues['about'] = docSnapshot.data['about'];
           _initValues['education'] = docSnapshot.data['education'];
           _submitValues['imageurl'] = docSnapshot.data['imageurl'];
-          _selectedHospital =
-              docSnapshot.data['hospital'].toString().split('/')[1];
+          _submitValues['type'] = _initValues['type'];
+          _selectedDoctorType = docSnapshot.data['type'];
+          print(_initValues['type'] + " type check");
+          _submitValues['hospital'] =
+              docSnapshot.data['hospital'].path.split('/')[1];
+          _selectedHospital = docSnapshot.data['hospital'].path.split('/')[1];
+          print(docSnapshot.data['hospital']);
+          setState(() {
+            _isLoading = false;
+          });
         });
       });
     } else {
@@ -173,7 +241,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Update Profile'),
+        title: Text(
+          widget.isUpdate ? 'Update Profile' : 'Set Up Profile',
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.exit_to_app),
@@ -191,6 +261,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 key: _form,
                 child: ListView(
                   children: <Widget>[
+                    if (widget.isUpdate)
+                      UserImagePicker(
+                        _pickedImage,
+                        sentPickedImage: _initValues['imageurl'],
+                      ),
                     TextFormField(
                       initialValue: _initValues['name'],
                       decoration: InputDecoration(
@@ -274,7 +349,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         return null;
                       },
                       onSaved: (value) {
-                        _submitValues['experience'] = value + " Years";
+                        _submitValues['experience'] = value;
                       },
                     ),
                     TextFormField(
@@ -339,6 +414,18 @@ class _UpdateProfileState extends State<UpdateProfile> {
                       onSaved: (value) {
                         _submitValues['education'] = value;
                       },
+                    ),
+                    DropdownButton(
+                      hint: new Text('Select Type'),
+                      items: doctorTypeList,
+                      value: _selectedDoctorType,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedDoctorType = value;
+                          _submitValues['type'] = _selectedDoctorType;
+                        });
+                      },
+                      isExpanded: true,
                     ),
                     DropdownButton(
                       hint: new Text('Select Hospital'),
