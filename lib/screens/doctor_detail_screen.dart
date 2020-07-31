@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_service/screens/user_appointment_screen.dart';
 import './doctors_reviews_screen.dart';
 import '../models/doctor.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -133,7 +134,38 @@ class DoctorDetailScreen extends StatelessWidget {
                 'See all reviews',
                 style: TextStyle(color: Theme.of(context).primaryColor),
               ),
-            )
+            ),
+            SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  height: 45,
+                  child: RaisedButton.icon(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                        UserAppointmentScreen.routeName,
+                        arguments: doctor.uid,
+                      );
+                    },
+                    icon: Icon(
+                      Icons.local_hospital,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      'Make an appointment',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),
+                    ),
+                    elevation: 0,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

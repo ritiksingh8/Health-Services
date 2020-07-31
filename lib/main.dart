@@ -4,6 +4,7 @@ import 'package:health_service/screens/doctor_detail_screen.dart';
 import 'package:health_service/screens/doctor_main_screen.dart';
 import 'package:health_service/screens/doctors_reviews_screen.dart';
 import 'package:health_service/screens/update_profile.dart';
+import 'package:health_service/screens/user_appointment_screen.dart';
 import './screens/doctors_list_screen.dart';
 import './screens/hospital_screen.dart';
 import './screens/hospital_detail_screen.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       home: HomeScreen(),
       routes: {
+        UserAppointmentScreen.routeName: (ctx) => UserAppointmentScreen(),
         DoctorMainScreen.routeName: (ctx) => DoctorMainScreen(),
         HospitalDetailScreen.routeName: (ctx) => HospitalDetailScreen(),
         DoctorsListScreen.routeName: (ctx) => DoctorsListScreen(),
