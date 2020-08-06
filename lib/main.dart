@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       home: HomeScreen(),
       routes: {
+        AuthScreen.routeName: (ctx) => AuthScreen(),
         UserAppointmentScreen.routeName: (ctx) => UserAppointmentScreen(),
         DoctorMainScreen.routeName: (ctx) => DoctorMainScreen(),
         HospitalDetailScreen.routeName: (ctx) => HospitalDetailScreen(),

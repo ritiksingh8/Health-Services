@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:health_service/screens/doctors_reviews_screen.dart';
 import '../models/doctor.dart';
 import 'package:intl/intl.dart';
 
@@ -9,6 +10,7 @@ class Reviews extends StatelessWidget {
   final Doctor doctor;
   final bool showAll;
   Reviews(this.doctor, this.showAll);
+  var reviewsCount;
 
   void _addNewReview(
     String reviewContent,
@@ -94,6 +96,8 @@ class Reviews extends StatelessWidget {
                 }
                 final reviews = reviewSnapshot.data.documents;
 
+                reviewsCount = reviews.length;
+
                 return ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -157,7 +161,20 @@ class Reviews extends StatelessWidget {
                   },
                 );
               },
-            )
+            ),
+            FlatButton(
+              onPressed: reviewsCount == 0
+                  ? null
+                  : () {
+                      Navigator.of(context).pushNamed(
+                          DoctorsReviewsScreen.routeName,
+                          arguments: doctor);
+                    },
+              child: Text(
+                reviewsCount == 0 ? 'No Reviews' : 'See all reviews',
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+            ),
           ],
         ),
       ),

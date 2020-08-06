@@ -144,7 +144,7 @@ class HospitalDetailScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                     label: Text(
-                      'Make an appointment',
+                      'View Our Doctors',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 15,

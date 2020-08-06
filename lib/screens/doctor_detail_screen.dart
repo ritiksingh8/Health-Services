@@ -30,144 +30,137 @@ class DoctorDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(doctor.name),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(
-                top: 18,
-                bottom: 18,
-                left: 18,
-                right: 18,
-              ),
-              child: Row(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
                 children: <Widget>[
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(doctor.imageurl),
-                    radius: 60,
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: 18,
+                      bottom: 18,
+                      left: 18,
+                      right: 18,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(doctor.imageurl),
+                          radius: 60,
+                        ),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                doctor.name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              Text(
+                                doctor.education,
+                                overflow: TextOverflow.visible,
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              Text(
+                                '${doctor.experience} of Experience',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                    width: 12,
+                  // Divider(thickness: 1),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          FlatButton.icon(
+                            icon: Icon(Icons.phone),
+                            label: Text('Call'),
+                            onPressed: () {
+                              return _makePhoneCall('tel:${doctor.contact}');
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          FlatButton.icon(
+                            icon: Icon(Icons.email),
+                            onPressed: () {
+                              return launch(_emailLaunchUri.toString());
+                            },
+                            label: Text('Email'),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  Expanded(
+                  Container(
+                    padding: EdgeInsets.all(18),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          doctor.name,
+                          'About:',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 15,
+                            fontSize: 16,
                           ),
                         ),
-                        Text(
-                          doctor.education,
-                          overflow: TextOverflow.visible,
-                          style: TextStyle(
-                            color: Colors.black54,
-                          ),
-                        ),
-                        Text(
-                          '${doctor.experience} of Experience',
-                          style: TextStyle(
-                            color: Colors.black54,
-                          ),
-                        ),
+                        SizedBox(height: 5),
+                        Text(doctor.about),
                       ],
                     ),
-                  )
-                ],
-              ),
-            ),
-            // Divider(thickness: 1),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    FlatButton.icon(
-                      icon: Icon(Icons.phone),
-                      label: Text('Call'),
-                      onPressed: () {
-                        return _makePhoneCall('tel:${doctor.contact}');
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    FlatButton.icon(
-                      icon: Icon(Icons.email),
-                      onPressed: () {
-                        return launch(_emailLaunchUri.toString());
-                      },
-                      label: Text('Email'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'About:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
                   ),
-                  SizedBox(height: 5),
-                  Text(doctor.about),
+                  Reviews(doctor, false),
+
+                  SizedBox(height: 10),
                 ],
               ),
             ),
-            Reviews(doctor, false),
-            FlatButton(
+          ),
+          Container(
+            height: 45,
+            child: RaisedButton.icon(
               onPressed: () {
-                Navigator.of(context).pushNamed(DoctorsReviewsScreen.routeName,
-                    arguments: doctor);
+                Navigator.of(context).pushNamed(
+                  UserAppointmentScreen.routeName,
+                  arguments: doctor.uid,
+                );
               },
-              child: Text(
-                'See all reviews',
-                style: TextStyle(color: Theme.of(context).primaryColor),
+              icon: Icon(
+                Icons.local_hospital,
+                color: Colors.white,
               ),
-            ),
-            SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  height: 45,
-                  child: RaisedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        UserAppointmentScreen.routeName,
-                        arguments: doctor.uid,
-                      );
-                    },
-                    icon: Icon(
-                      Icons.local_hospital,
-                      color: Colors.white,
-                    ),
-                    label: Text(
-                      'Make an appointment',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                      ),
-                    ),
-                    elevation: 0,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    color: Theme.of(context).primaryColor,
-                  ),
+              label: Text(
+                'Make an appointment',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
                 ),
-              ],
+              ),
+              elevation: 0,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              color: Theme.of(context).primaryColor,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

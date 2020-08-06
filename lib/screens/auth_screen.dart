@@ -9,6 +9,7 @@ import '../helpers/doctors_validation_list.dart';
 
 class AuthScreen extends StatefulWidget {
   static bool authComplete = true;
+  static const routeName = '/auth-screen';
   @override
   _AuthScreenState createState() => _AuthScreenState();
 }

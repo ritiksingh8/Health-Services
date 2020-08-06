@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:health_service/widgets/app_drawer.dart';
+import 'package:health_service/widgets/appointment_list.dart';
 import 'package:intl/intl.dart';
 
 class DoctorMainScreen extends StatefulWidget {
@@ -91,40 +93,67 @@ class _DoctorMainScreenState extends State<DoctorMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Doctor Main Screen'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-            },
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Calendar'),
+          bottom: TabBar(
+            indicatorColor: Colors.yellow,
+            labelColor: Colors.yellow,
+            unselectedLabelColor: Colors.white,
+            tabs: <Widget>[
+              Tab(
+                text: 'Today',
+              ),
+              Tab(
+                text: 'Tomorrow',
+              ),
+              Tab(
+                text: 'Day After',
+              ),
+            ],
           ),
-        ],
-      ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : StreamBuilder(
-              stream: Firestore.instance
-                  .collection('doctors')
-                  .document(doctorId)
-                  .collection('appointments')
-                  .snapshots(),
-              builder: (context, streamSnapshot) {
-                if (streamSnapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                final appointmentDocs = streamSnapshot.data.documents;
-
-                segregateAppointments(appointmentDocs);
-
-                return Text('');
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
               },
             ),
+          ],
+        ),
+        drawer: AppDrawer(),
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : StreamBuilder(
+                stream: Firestore.instance
+                    .collection('doctors')
+                    .document(doctorId)
+                    .collection('appointments')
+                    .snapshots(),
+                builder: (context, streamSnapshot) {
+                  if (streamSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  final appointmentDocs = streamSnapshot.data.documents;
+
+                  segregateAppointments(appointmentDocs);
+
+                  return TabBarView(
+                    children: <Widget>[
+                      AppointmentList(todayList),
+                      AppointmentList(tomorrowList),
+                      AppointmentList(dayAfterTomorrowList),
+                    ],
+                  );
+                },
+              ),
+      ),
     );
   }
 }
