@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:health_service/screens/user_appointment_screen.dart';
-import './doctors_reviews_screen.dart';
 import '../models/doctor.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/reviews.dart';
@@ -128,7 +127,7 @@ class DoctorDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Reviews(doctor, false),
+                  Reviews(doctor.uid, false),
 
                   SizedBox(height: 10),
                 ],

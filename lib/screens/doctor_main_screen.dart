@@ -5,8 +5,11 @@ import 'package:health_service/widgets/app_drawer.dart';
 import 'package:health_service/widgets/appointment_list.dart';
 import 'package:intl/intl.dart';
 
+import 'auth_screen.dart';
+
 class DoctorMainScreen extends StatefulWidget {
   static const routeName = '/doctor-main-screen';
+  static List<DocumentSnapshot> historyStaticList = [];
 
   @override
   _DoctorMainScreenState createState() => _DoctorMainScreenState();
@@ -29,6 +32,8 @@ class _DoctorMainScreenState extends State<DoctorMainScreen> {
   var tomorrowList;
 
   var dayAfterTomorrowList;
+
+  var historyList = [];
 
   var isLoading = false;
 
@@ -66,6 +71,8 @@ class _DoctorMainScreenState extends State<DoctorMainScreen> {
       '3': [],
       '5': [],
     };
+    historyList = [];
+    DoctorMainScreen.historyStaticList = [];
 
     appointmentDocs.forEach(
       (doc) {
@@ -83,12 +90,16 @@ class _DoctorMainScreenState extends State<DoctorMainScreen> {
                     doc['time'].seconds * 1000)) ==
             DateFormat.yMMMd().format(dayAfterTomorrow)) {
           dayAfterTomorrowList[doc['slot']].add(doc);
-        } else {}
+        } else {
+          historyList.add(doc);
+          DoctorMainScreen.historyStaticList.add(doc);
+        }
       },
     );
     print(todayList);
     print(tomorrowList);
     print(dayAfterTomorrowList);
+    print(historyList);
   }
 
   @override
@@ -119,11 +130,18 @@ class _DoctorMainScreenState extends State<DoctorMainScreen> {
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
                 FirebaseAuth.instance.signOut();
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(AuthScreen.routeName, (route) {
+                  return false;
+                });
               },
             ),
           ],
         ),
-        drawer: AppDrawer(),
+        drawer: AppDrawer(
+          doctorId,
+          historyList: historyList,
+        ),
         body: isLoading
             ? Center(
                 child: CircularProgressIndicator(),
@@ -133,6 +151,7 @@ class _DoctorMainScreenState extends State<DoctorMainScreen> {
                     .collection('doctors')
                     .document(doctorId)
                     .collection('appointments')
+                    .orderBy('time', descending: true)
                     .snapshots(),
                 builder: (context, streamSnapshot) {
                   if (streamSnapshot.connectionState ==

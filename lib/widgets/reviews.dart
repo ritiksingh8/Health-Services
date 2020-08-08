@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:health_service/screens/doctors_reviews_screen.dart';
-import '../models/doctor.dart';
 import 'package:intl/intl.dart';
 
 import 'new_review.dart';
 
 class Reviews extends StatelessWidget {
-  final Doctor doctor;
+  final String doctorID;
   final bool showAll;
-  Reviews(this.doctor, this.showAll);
-  var reviewsCount;
+  Reviews(this.doctorID, this.showAll);
 
   void _addNewReview(
     String reviewContent,
@@ -19,7 +17,7 @@ class Reviews extends StatelessWidget {
   ) async {
     await Firestore.instance
         .collection('doctors')
-        .document(doctor.uid)
+        .document(doctorID)
         .collection('reviews')
         .add({
       'createdAt': Timestamp.now(),
@@ -44,6 +42,7 @@ class Reviews extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var reviewsCount;
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.only(
@@ -85,7 +84,7 @@ class Reviews extends StatelessWidget {
             FutureBuilder(
               future: Firestore.instance
                   .collection('doctors')
-                  .document(doctor.uid)
+                  .document(doctorID)
                   .collection('reviews')
                   .getDocuments(),
               builder: (ctx, reviewSnapshot) {
@@ -98,82 +97,89 @@ class Reviews extends StatelessWidget {
 
                 reviewsCount = reviews.length;
 
-                return ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: showAll
-                      ? reviews.length
-                      : (reviews.length < 1 ? reviews.length : 1),
-                  itemBuilder: (ctx, index) {
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 5),
-                      child: Card(
-                        elevation: 2,
-                        color: Colors.lime[100],
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                      reviews[index]['creatorImageUrl'],
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        reviews[index]['creatorName'],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15),
-                                      ),
-                                      Text(
-                                        DateFormat.yMMMd()
-                                            .format(DateTime
-                                                .fromMillisecondsSinceEpoch(
-                                                    reviews[index]['createdAt']
-                                                            .seconds *
-                                                        1000))
-                                            .toString(),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Divider(thickness: 2),
-                              Text(
-                                reviews[index]['review'],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              )
-                            ],
+                return reviewsCount == 0
+                    ? Center(
+                        child: Text(
+                          'No reviews yet',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
                         ),
-                      ),
-                    );
-                  },
-                );
+                      )
+                    : ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: showAll
+                            ? reviews.length
+                            : (reviews.length < 1 ? reviews.length : 1),
+                        itemBuilder: (ctx, index) {
+                          return GestureDetector(
+                            onTap: showAll
+                                ? null
+                                : () {
+                                    Navigator.of(context).pushNamed(
+                                        DoctorsReviewsScreen.routeName,
+                                        arguments: doctorID);
+                                  },
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 5),
+                              child: Card(
+                                elevation: 2,
+                                color: Colors.lime[100],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          CircleAvatar(
+                                            backgroundImage: NetworkImage(
+                                              reviews[index]['creatorImageUrl'],
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                reviews[index]['creatorName'],
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15),
+                                              ),
+                                              Text(
+                                                DateFormat.yMMMd()
+                                                    .format(DateTime
+                                                        .fromMillisecondsSinceEpoch(
+                                                            reviews[index][
+                                                                        'createdAt']
+                                                                    .seconds *
+                                                                1000))
+                                                    .toString(),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Divider(thickness: 2),
+                                      Text(
+                                        reviews[index]['review'],
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
               },
-            ),
-            FlatButton(
-              onPressed: reviewsCount == 0
-                  ? null
-                  : () {
-                      Navigator.of(context).pushNamed(
-                          DoctorsReviewsScreen.routeName,
-                          arguments: doctor);
-                    },
-              child: Text(
-                reviewsCount == 0 ? 'No Reviews' : 'See all reviews',
-                style: TextStyle(color: Theme.of(context).primaryColor),
-              ),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_service/screens/auth_screen.dart';
+import 'package:health_service/screens/doctor_appointment_history.dart';
 import 'package:health_service/screens/doctor_detail_screen.dart';
 import 'package:health_service/screens/doctor_main_screen.dart';
 import 'package:health_service/screens/doctors_reviews_screen.dart';
@@ -36,6 +37,8 @@ class MyApp extends StatelessWidget {
         DoctorsListScreen.routeName: (ctx) => DoctorsListScreen(),
         DoctorDetailScreen.routeName: (ctx) => DoctorsListScreen(),
         DoctorsReviewsScreen.routeName: (ctx) => DoctorsReviewsScreen(),
+        DoctorAppointmentHistoryScreen.routeName: (ctx) =>
+            DoctorAppointmentHistoryScreen(),
       },
     );
   }

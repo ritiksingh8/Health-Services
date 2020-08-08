@@ -10,8 +10,6 @@ class AppointmentList extends StatefulWidget {
 }
 
 class _AppointmentListState extends State<AppointmentList> {
-  var _expanded = false;
-
   var slotList = [
     '10AM - 12PM',
     '1PM - 3PM',

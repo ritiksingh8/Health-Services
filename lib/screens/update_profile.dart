@@ -21,7 +21,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
   final _form = GlobalKey<FormState>();
   final _emailFocusNode = FocusNode();
   final _contactFocusNode = FocusNode();
-  final _imageurlFocusNode = FocusNode();
   final _typeFocusNode = FocusNode();
   final _experienceFocusNode = FocusNode();
   final _feeFocusNode = FocusNode();

@@ -1,10 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:health_service/screens/auth_screen.dart';
+import 'package:health_service/screens/doctor_appointment_history.dart';
 import 'package:health_service/screens/doctor_main_screen.dart';
+import 'package:health_service/screens/doctors_reviews_screen.dart';
 import 'package:health_service/screens/update_profile.dart';
 
 class AppDrawer extends StatelessWidget {
+  final String doctorId;
+  final List historyList;
+  AppDrawer(this.doctorId, {this.historyList});
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -38,26 +41,23 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.account_circle),
             title: Text('My Reviews'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushNamed(DoctorsReviewsScreen.routeName,
+                  arguments: doctorId);
+            },
           ),
           Divider(),
           ListTile(
             leading: Icon(Icons.history),
             title: Text('History'),
-            onTap: () {},
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Logout '),
             onTap: () {
-              FirebaseAuth.instance.signOut();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(AuthScreen.routeName, (route) {
-                return false;
-              });
+              Navigator.of(context).pushNamed(
+                DoctorAppointmentHistoryScreen.routeName,
+                arguments: DoctorMainScreen.historyStaticList,
+              );
             },
           ),
+          Divider(),
         ],
       ),
     );
